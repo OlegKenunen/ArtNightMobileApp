@@ -1,4 +1,4 @@
-package ru.cpsmi.artnightmobileapp;
+package ru.cpsmi.artnightmobileapp.datalayer;
 
 /**
  * Created by T on 6/14/2017.
