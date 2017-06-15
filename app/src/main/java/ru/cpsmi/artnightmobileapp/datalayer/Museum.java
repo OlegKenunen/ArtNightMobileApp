@@ -3,6 +3,7 @@ package ru.cpsmi.artnightmobileapp.datalayer;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
+import java.util.List;
 
 public class Museum {
     private String title;
@@ -12,4 +13,8 @@ public class Museum {
     private Date endTime;
     private String url;
     private String programme;
+    private List<Event> events;// = new List();
+
+
+
 }
