@@ -1,5 +1,7 @@
 package ru.cpsmi.artnightmobileapp.datalayer;
 
+import java.util.Date;
+
 public class Museum {
     private String title;
     private String address;
