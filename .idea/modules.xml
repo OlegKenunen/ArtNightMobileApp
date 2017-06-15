@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ArtNightMobileApp.iml" filepath="$PROJECT_DIR$/ArtNightMobileApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/ArtNightMobileApp-app.iml" filepath="$PROJECT_DIR$/app/ArtNightMobileApp-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/elenes-ArtNightMobileApp.iml" filepath="$PROJECT_DIR$/elenes-ArtNightMobileApp.iml" />
     </modules>
   </component>
 </project>
