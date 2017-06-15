@@ -40,7 +40,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a markers
+        // Add markers
         LatLng museum1 = new LatLng(59.970984,30.32144);
         mMap.addMarker(new MarkerOptions().position(museum1).title("Ботанический сад Петра Великого"));
         LatLng museum2 = new LatLng(59.955366,30.311068);
