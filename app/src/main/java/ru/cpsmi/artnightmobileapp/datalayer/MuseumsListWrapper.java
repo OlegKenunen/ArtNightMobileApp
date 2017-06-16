@@ -1,7 +1,7 @@
 package ru.cpsmi.artnightmobileapp.datalayer;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+//import javax.xml.bind.annotation.XmlElement;
+//import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 /**
@@ -10,13 +10,13 @@ import java.util.List;
  * Class for save/read data from XML
  */
 
-@XmlRootElement(name = "museums")
+//@XmlRootElement(name = "museums")
 public class MuseumsListWrapper {
 
 
     private List museums;
 
-    @XmlElement(name = "person")
+    //@XmlElement(name = "museum")
     public List getMuseums() {
         return museums;
     }
