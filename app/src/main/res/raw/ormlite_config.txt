@@ -1,0 +1,66 @@
+#
+# generated on 2017/06/19 03:00:12
+#
+# --table-start--
+dataClass=ru.cpsmi.artnightmobileapp.data.Event
+tableName=events
+# --table-fields-start--
+# --field-start--
+fieldName=eventId
+columnName=event_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=eventType
+columnName=event_type
+# --field-end--
+# --field-start--
+fieldName=title
+columnName=title
+# --field-end--
+# --field-start--
+fieldName=museum
+canBeNull=false
+foreign=true
+foreignAutoRefresh=true
+maxForeignAutoRefreshLevel=2
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=ru.cpsmi.artnightmobileapp.data.Museum
+tableName=museums
+# --table-fields-start--
+# --field-start--
+fieldName=museumId
+columnName=museum_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=title
+columnName=title
+# --field-end--
+# --field-start--
+fieldName=latitude
+columnName=latitude
+# --field-end--
+# --field-start--
+fieldName=longitude
+columnName=longitude
+# --field-end--
+# --field-start--
+fieldName=address
+columnName=address
+# --field-end--
+# --field-start--
+fieldName=startTime
+columnName=start_time
+# --field-end--
+# --field-start--
+fieldName=endTime
+columnName=end_time
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

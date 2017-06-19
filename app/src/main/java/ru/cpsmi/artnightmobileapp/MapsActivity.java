@@ -2,17 +2,25 @@ package ru.cpsmi.artnightmobileapp;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-
+import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+import ru.cpsmi.artnightmobileapp.data.DatabaseHelper;
+import ru.cpsmi.artnightmobileapp.data.Event;
+import ru.cpsmi.artnightmobileapp.data.Museum;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -25,14 +33,88 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
+    // Reference of DatabaseHelper class to access its DAOs and other components
+    private DatabaseHelper databaseHelper = null;
+
+
+    // Declaration of DAO to interact with corresponding table
+    private Dao<Museum, Integer> museumDao;
+    private Dao<Event, Integer> eventDao;
+
+    // It holds the list of StudentDetails objects fetched from Database
+    private List<Museum> museumList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //DataController dataController = new DataController();
+        //dataController.setTestDataToLocalDB(databaseHelper);
+
+        final Museum museum = new Museum("Музей 1", 59.970984, 30.32144);
+
+
+        try {
+            // This is how, a reference of DAO object can be done
+            final Dao<Museum, Integer> museumDao = getHelper().getMuseumDao();
+
+            //This is the way to insert data into a database table
+            museumDao.create(museum);
+            //reset();
+            //showDialog();
+            Log.i("DB", "Create complete");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.i("DB", "Create FAIL");
+        }
+
+        try {
+            // This is how, a reference of DAO object can be done
+            museumDao = getHelper().getMuseumDao();
+
+            // Query the database. We need all the records so, used queryForAll()
+            museumList = museumDao.queryForAll();
+
+            Log.i("DB", "Select complete");
+
+            Log.i("DB", String.valueOf(museumList.size()));
+            Log.i("DB", ""+String.valueOf(museumList.get(1).getMuseumId()));
+            Log.i("DB", ""+museumList.get(12).getTitle());
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.i("DB", "Select FAIL");
+        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    // This is how, DatabaseHelper can be initialized for future use
+    private DatabaseHelper getHelper() {
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        }
+        return databaseHelper;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+		/*
+		 * You'll need this in your class to release the helper when done.
+		 */
+        if (databaseHelper != null) {
+            OpenHelperManager.releaseHelper();
+            databaseHelper = null;
+        }
     }
 
 
@@ -49,16 +131,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+
         // Add markers
-        LatLng museum1 = new LatLng(59.970984,30.32144);
+        LatLng museum1 = new LatLng(59.970984, 30.32144);
         mMap.addMarker(new MarkerOptions().position(museum1).title("Ботанический сад Петра Великого"));
-        LatLng museum2 = new LatLng(59.955366,30.311068);
+        LatLng museum2 = new LatLng(59.955366, 30.311068);
         mMap.addMarker(new MarkerOptions().position(museum2).title("Планетарий"));
-        LatLng museum3 = new LatLng(59.921772,30.35646);
+        LatLng museum3 = new LatLng(59.921772, 30.35646);
         mMap.addMarker(new MarkerOptions().position(museum3).title("Лофт Проект ЭТАЖИ"));
-        LatLng museum4 = new LatLng(59.965376,30.315603);
+        LatLng museum4 = new LatLng(59.965376, 30.315603);
         mMap.addMarker(new MarkerOptions().position(museum4).title("Музей интерактивной науки «ЛабиринтУм»"));
-        LatLng museum5 = new LatLng(59.958073,30.317481);
+        LatLng museum5 = new LatLng(59.958073, 30.317481);
         mMap.addMarker(new MarkerOptions().position(museum5).title("Ленфильм"));
 
 
@@ -80,4 +163,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+
 }
