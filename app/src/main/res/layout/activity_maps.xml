@@ -7,10 +7,11 @@
         android:layout_gravity="center"
         android:orientation="vertical" android:weightSum="1">
     <AutoCompleteTextView
-            android:text="AutoCompleteTextView"
+            android:id="@+id/autoComplete"
             android:layout_height="wrap_content"
-            android:id="@+id/autoCompleteTextView2"
             android:layout_width="match_parent"
+            android:completionHint="Выберите музей"
+
     />
     <fragment
 

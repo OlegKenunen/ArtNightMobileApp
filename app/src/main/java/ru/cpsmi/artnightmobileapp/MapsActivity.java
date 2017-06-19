@@ -7,6 +7,8 @@ import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,6 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         //DataController dataController = new DataController();
         //dataController.setTestDataToLocalDB(databaseHelper);
 
@@ -77,9 +80,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             Log.i("DB", "Select complete");
 
-            Log.i("DB", String.valueOf(museumList.size()));
-            Log.i("DB", ""+String.valueOf(museumList.get(1).getMuseumId()));
-            Log.i("DB", ""+museumList.get(12).getTitle());
+
+            int lastAdded=museumList.size();
+            Log.i("DB", "Число музеев в базе данных: "+String.valueOf(museumList.size()));
+            Log.i("DB", "последний добавленный Id: " + String.valueOf(museumList.get(lastAdded).getMuseumId()));
+            Log.i("DB", "название последнего: " + museumList.get(lastAdded).getTitle());
 
 
         } catch (SQLException e) {
@@ -94,6 +99,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        String[] museumTitles = {
+                "Ботанический сад Петра Великого",
+                "Планетарий",
+                "Лофт Проект ЭТАЖИ",
+                "Музей интерактивной науки «ЛабиринтУм»",
+                "Ленфильм"};
+
+        // Получаем ссылку на элемент AutoCompleteTextView в разметке
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoComplete);
+        // Создаем адаптер для автозаполнения элемента AutoCompleteTextView
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, museumTitles);
+        autoCompleteTextView.setAdapter(adapter);
     }
 
     // This is how, DatabaseHelper can be initialized for future use
@@ -109,7 +129,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onDestroy();
 
 		/*
-		 * You'll need this in your class to release the helper when done.
+         * You'll need this in your class to release the helper when done.
 		 */
         if (databaseHelper != null) {
             OpenHelperManager.releaseHelper();
