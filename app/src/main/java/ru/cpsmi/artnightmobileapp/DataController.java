@@ -61,6 +61,8 @@ class DataController {
         final List<Museum> listOfMuseums = new ArrayList<Museum>();
         final List<Event> listOfEvents = new ArrayList<Event>();
 
+        //Первичное наполнение базы данных
+        //Переделать на считывание из файла
         listOfMuseums.add(new Museum("Ботанический сад Петра Великого", 59.970984, 30.32144));
 
         listOfMuseums.add(new Museum("Планетарий", 59.955366, 30.311068));
@@ -71,18 +73,19 @@ class DataController {
 
         listOfMuseums.add(new Museum("Ленфильм", 59.958073, 30.317481));
 
-        listOfMuseums.add(new Museum("Академическая Капелла Санкт-Петербурга", 59.939942,30.320758));
+        listOfMuseums.add(new Museum("Академическая Капелла Санкт-Петербурга", 59.939942, 30.320758));
         listOfEvents.add(new Event("12 концертов: скрипка и клавесин, джаз и неофолк", "Концерт", listOfMuseums.get(listOfMuseums.size() - 1)));
 
 
         try {
             // This is how, a reference of DAO object can be done
             final Dao<Museum, Integer> museumDao = getHelper(context).getMuseumDao();
+            final Dao<Event, Integer> eventDao = getHelper(context).getEventDao();
 
-            for (Museum listOfMuseum : listOfMuseums) {
-                //This is the way to insert data into a database table
-                museumDao.create(listOfMuseum);
-            }
+            //This is the way to insert data into a database table
+            museumDao.create(listOfMuseums);
+            eventDao.create(listOfEvents);
+
 
             //reset();
             //showDialog();

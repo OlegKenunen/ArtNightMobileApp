@@ -90,9 +90,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add markers
         DataController dataController = DataController.getInstance();
         List<Museum> listOfMuseums = dataController.getListOfMuseums(this);
-        for (Museum listOfMuseum : listOfMuseums) {
-            LatLng museum1 = new LatLng(listOfMuseum.getLatitude(), listOfMuseum.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(museum1).title(listOfMuseum.getTitle()));
+        for (Museum currentMuseum : listOfMuseums) {
+            LatLng museum = new LatLng(currentMuseum.getLatitude(), currentMuseum.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(museum).title(currentMuseum.getTitle()));
         }
 
 
@@ -100,9 +100,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(centerOfTheMap));
         mMap.setMinZoomPreference(10.0f);
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
+            //   ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
