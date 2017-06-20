@@ -31,9 +31,10 @@ public class Museum {
     @DatabaseField(columnName = "end_time")
     private Date endTime;
 
-
+    @DatabaseField(columnName = "programme")
+    private String programme;
     //private String url; //нужно ли?
-    //private String programme; //дублирует информацию с событиями, возможно, стоит вынести в Event
+
     //private List<Event> events; //взаимоотношение классов переносим на сторону DB
 
     // Default constructor is needed for the SQLite
@@ -88,5 +89,9 @@ public class Museum {
 
     public Date getEndTime() {
         return endTime;
+    }
+
+    public String getProgramme() {
+        return programme;
     }
 }

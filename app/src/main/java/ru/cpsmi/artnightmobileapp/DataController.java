@@ -39,23 +39,40 @@ class DataController {
 
 
     void setTestDataToLocalDB(Context context) {
+        try {
+            // This is how, a reference of DAO object can be done
+            museumDao = getHelper(context).getMuseumDao();
+
+            // Query the database. We need all the records so, used queryForAll()
+            long coundOfMuseums = museumDao.countOf();
+            if (museumDao.countOf() > 0) {
+                Log.i("DB", "It is NOT necessary to insert data");
+                return;
+            } else {
+                Log.i("DB", "It is necessary to insert data");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.i("DB", "Check DB FAIL");
+        }
 
 
         final List<Museum> listOfMuseums = new ArrayList<Museum>();
         final List<Event> listOfEvents = new ArrayList<Event>();
 
         listOfMuseums.add(new Museum("Ботанический сад Петра Великого", 59.970984, 30.32144));
-        listOfEvents.add(new Event("Постоянная экспозиция", "Выставка", listOfMuseums.get(listOfMuseums.size() - 1)));
 
         listOfMuseums.add(new Museum("Планетарий", 59.955366, 30.311068));
-        listOfEvents.add(new Event("Концерт Рахманинова", "Концерт", listOfMuseums.get(listOfMuseums.size() - 1)));
-
 
         listOfMuseums.add(new Museum("Лофт Проект ЭТАЖИ", 59.921772, 30.35646));
 
         listOfMuseums.add(new Museum("Музей интерактивной науки «ЛабиринтУм»", 59.965376, 30.315603));
 
         listOfMuseums.add(new Museum("Ленфильм", 59.958073, 30.317481));
+
+        listOfMuseums.add(new Museum("Академическая Капелла Санкт-Петербурга", 59.939942,30.320758));
+        listOfEvents.add(new Event("12 концертов: скрипка и клавесин, джаз и неофолк", "Концерт", listOfMuseums.get(listOfMuseums.size() - 1)));
 
 
         try {
@@ -89,18 +106,18 @@ class DataController {
             // Query the database. We need all the records so, used queryForAll()
             museumList = museumDao.queryForAll();
 
-            Log.i("DB", "Select complete");
+            Log.i("DB", "Select museums complete");
 
-            int numberOfMuseums = museumList.size();
+            //int numberOfMuseums = museumList.size();
             Log.i("DB", "Число музеев в базе данных: " + String.valueOf(museumList.size()));
-            Log.i("DB", "Id последнего: " + String.valueOf(museumList.get(numberOfMuseums - 1).getMuseumId()));
-            Log.i("DB", "название последнего: " + museumList.get(numberOfMuseums - 1).getTitle());
+//            Log.i("DB", "Id последнего: " + String.valueOf(museumList.get(numberOfMuseums - 1).getMuseumId()));
+//            Log.i("DB", "название последнего: " + museumList.get(numberOfMuseums - 1).getTitle());
 
             return museumList;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            Log.i("DB", "Select FAIL");
+            Log.i("DB", "Select museums FAIL");
         }
         return null;
     }
@@ -117,12 +134,9 @@ class DataController {
             // Query the database. We need all the records so, used queryForAll()
             museumList = museumDao.queryForAll();
 
-            Log.i("DB", "Select complete");
+            Log.i("DB", "Select museum titles complete");
 
             int numberOfMuseums = museumList.size();
-            Log.i("DB", "Число музеев в базе данных: " + String.valueOf(museumList.size()));
-            Log.i("DB", "Id последнего: " + String.valueOf(museumList.get(numberOfMuseums - 1).getMuseumId()));
-            Log.i("DB", "название последнего: " + museumList.get(numberOfMuseums - 1).getTitle());
 
 
             String[] titles = new String[numberOfMuseums];
@@ -134,7 +148,7 @@ class DataController {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            Log.i("DB", "Select FAIL");
+            Log.i("DB", "Select titles FAIL");
             return null;
         }
 
