@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,13 +14,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
-import ru.cpsmi.artnightmobileapp.data.DatabaseHelper;
-import ru.cpsmi.artnightmobileapp.data.Event;
 import ru.cpsmi.artnightmobileapp.data.Museum;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -35,13 +29,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
-    // Reference of DatabaseHelper class to access its DAOs and other components
-    private DatabaseHelper databaseHelper = null;
-
-
-    // Declaration of DAO to interact with corresponding table
-    private Dao<Museum, Integer> museumDao;
-    private Dao<Event, Integer> eventDao;
 
     // It holds the list of StudentDetails objects fetched from Database
     private List<Museum> museumList;
@@ -50,47 +37,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
 
 
-        //DataController dataController = new DataController();
-        //dataController.setTestDataToLocalDB(databaseHelper);
+        DataController dataController = DataController.getInstance();
+        dataController.setTestDataToLocalDB(this);
 
-        final Museum museum = new Museum("Музей 1", 59.970984, 30.32144);
-
-
-        try {
-            // This is how, a reference of DAO object can be done
-            final Dao<Museum, Integer> museumDao = getHelper().getMuseumDao();
-
-            //This is the way to insert data into a database table
-            museumDao.create(museum);
-            //reset();
-            //showDialog();
-            Log.i("DB", "Create complete");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Log.i("DB", "Create FAIL");
-        }
-
-        try {
-            // This is how, a reference of DAO object can be done
-            museumDao = getHelper().getMuseumDao();
-
-            // Query the database. We need all the records so, used queryForAll()
-            museumList = museumDao.queryForAll();
-
-            Log.i("DB", "Select complete");
-
-
-            int lastAdded=museumList.size();
-            Log.i("DB", "Число музеев в базе данных: "+String.valueOf(museumList.size()));
-            Log.i("DB", "последний добавленный Id: " + String.valueOf(museumList.get(lastAdded).getMuseumId()));
-            Log.i("DB", "название последнего: " + museumList.get(lastAdded).getTitle());
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Log.i("DB", "Select FAIL");
-        }
+        museumList = dataController.getListOfMuseums(this);
 
 
         super.onCreate(savedInstanceState);
@@ -101,12 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
 
-        String[] museumTitles = {
-                "Ботанический сад Петра Великого",
-                "Планетарий",
-                "Лофт Проект ЭТАЖИ",
-                "Музей интерактивной науки «ЛабиринтУм»",
-                "Ленфильм"};
+        String[] museumTitles = dataController.getMuseumTitles(this);
 
         // Получаем ссылку на элемент AutoCompleteTextView в разметке
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoComplete);
@@ -116,13 +61,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         autoCompleteTextView.setAdapter(adapter);
     }
 
-    // This is how, DatabaseHelper can be initialized for future use
-    private DatabaseHelper getHelper() {
-        if (databaseHelper == null) {
-            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-        }
-        return databaseHelper;
-    }
 
     @Override
     protected void onDestroy() {
@@ -131,10 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		/*
          * You'll need this in your class to release the helper when done.
 		 */
-        if (databaseHelper != null) {
-            OpenHelperManager.releaseHelper();
-            databaseHelper = null;
-        }
+        DataController dataController = DataController.getInstance();
+        dataController.releaseHelper();
     }
 
 
@@ -151,21 +87,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-
         // Add markers
-        LatLng museum1 = new LatLng(59.970984, 30.32144);
-        mMap.addMarker(new MarkerOptions().position(museum1).title("Ботанический сад Петра Великого"));
-        LatLng museum2 = new LatLng(59.955366, 30.311068);
-        mMap.addMarker(new MarkerOptions().position(museum2).title("Планетарий"));
-        LatLng museum3 = new LatLng(59.921772, 30.35646);
-        mMap.addMarker(new MarkerOptions().position(museum3).title("Лофт Проект ЭТАЖИ"));
-        LatLng museum4 = new LatLng(59.965376, 30.315603);
-        mMap.addMarker(new MarkerOptions().position(museum4).title("Музей интерактивной науки «ЛабиринтУм»"));
-        LatLng museum5 = new LatLng(59.958073, 30.317481);
-        mMap.addMarker(new MarkerOptions().position(museum5).title("Ленфильм"));
+        DataController dataController = DataController.getInstance();
+        List<Museum> listOfMuseums = dataController.getListOfMuseums(this);
+        for (Museum listOfMuseum : listOfMuseums) {
+            LatLng museum1 = new LatLng(listOfMuseum.getLatitude(), listOfMuseum.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(museum1).title(listOfMuseum.getTitle()));
+        }
 
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(museum5));
+        LatLng centerOfTheMap = new LatLng(59.9495479, 30.3162639);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(centerOfTheMap));
         mMap.setMinZoomPreference(10.0f);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

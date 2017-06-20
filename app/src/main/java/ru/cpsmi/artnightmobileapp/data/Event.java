@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by T on 6/14/2017.
  */
-@DatabaseTable(tableName="events")
+@DatabaseTable(tableName = "events")
 public class Event {
 
     @DatabaseField(generatedId = true, columnName = "event_id")
@@ -30,6 +30,12 @@ public class Event {
 
     // Default constructor is needed for the SQLite
     public Event() {
+    }
+
+    public Event(String title, String eventType, Museum museum) {
+        this.title = title;
+        this.eventType = eventType;
+        this.museum = museum;
     }
 
     public String getEventType() {

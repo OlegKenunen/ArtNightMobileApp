@@ -41,9 +41,9 @@ public class Museum {
     }
 
     public Museum(String title, double latitude, double longitude) {
-        this.title=title;
-        this.latitude=latitude;
-        this.longitude=longitude;
+        this.title = title;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public int getMuseumId() {
