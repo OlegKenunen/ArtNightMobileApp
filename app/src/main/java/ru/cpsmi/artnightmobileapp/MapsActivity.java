@@ -1,13 +1,15 @@
 package ru.cpsmi.artnightmobileapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,7 +20,7 @@ import ru.cpsmi.artnightmobileapp.data.Museum;
 
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -28,9 +30,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     private GoogleMap mMap;
+    private Button searchButton;
 
-
-    // It holds the list of StudentDetails objects fetched from Database
+    // It holds the list of Museum objects fetched from Database
     private List<Museum> museumList;
 
     @Override
@@ -49,16 +51,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        searchButton = (Button) findViewById(R.id.search_button);
+        searchButton.setOnClickListener(this);
+
+        //
 
 
-        String[] museumTitles = dataController.getMuseumTitles(this);
 
-        // Получаем ссылку на элемент AutoCompleteTextView в разметке
-        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoComplete);
-        // Создаем адаптер для автозаполнения элемента AutoCompleteTextView
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, museumTitles);
-        autoCompleteTextView.setAdapter(adapter);
     }
 
 
@@ -119,5 +118,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+
+    @Override
+    public void onClick(View v) {
+
+        // Render StudentAddActivity screen once click on "Add Student" Button
+        Log.i("Activity", ""+v+" pressed");
+        if(v == searchButton) {
+            startActivity(new Intent(this, SearchActivity.class));
+        }
+    }
+
 
 }

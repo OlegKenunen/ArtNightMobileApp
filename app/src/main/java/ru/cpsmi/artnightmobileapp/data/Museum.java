@@ -45,6 +45,7 @@ public class Museum {
         this.title = title;
         this.latitude = latitude;
         this.longitude = longitude;
+        //this.startTime = new Date(startTime);
     }
 
     public int getMuseumId() {
