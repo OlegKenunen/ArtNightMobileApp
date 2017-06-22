@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,6 +32,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Button searchButton;
+    private ImageView searchIcon;
+    private ImageView settingsIcon;
 
     // It holds the list of Museum objects fetched from Database
     private List<Museum> museumList;
@@ -51,9 +54,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         searchButton = (Button) findViewById(R.id.search_button);
         searchButton.setOnClickListener(this);
 
+        searchIcon = (ImageView) findViewById(R.id.imageViewSearchIcon);
+        searchIcon.setImageResource(R.drawable.search_icon);
+
+        settingsIcon = (ImageView) findViewById(R.id.imageViewSettingsIcon);
+        settingsIcon.setImageResource(R.drawable.settings_icon);
         //
 
 
@@ -123,7 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onClick(View v) {
 
         // Render StudentAddActivity screen once click on "Add Student" Button
-        Log.i("Activity", ""+v+" pressed");
+        Log.i("Art", ""+v+" pressed");
         if(v == searchButton) {
             startActivity(new Intent(this, SearchActivity.class));
         }

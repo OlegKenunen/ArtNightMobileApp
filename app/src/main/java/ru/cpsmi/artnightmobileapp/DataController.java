@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import ru.cpsmi.artnightmobileapp.data.DatabaseHelper;
 import ru.cpsmi.artnightmobileapp.data.Event;
 import ru.cpsmi.artnightmobileapp.data.Museum;
@@ -26,6 +27,8 @@ class DataController {
     // Declaration of DAO to interact with corresponding table
     private Dao<Museum, Integer> museumDao;
     private Dao<Event, Integer> eventDao;
+
+    private Museum selectedMuseum;
 
     private DataController() {
     }
@@ -99,25 +102,19 @@ class DataController {
     }
 
     List<Museum> getListOfMuseums(Context context) {
-
         List<Museum> museumList;
 
         try {
             // This is how, a reference of DAO object can be done
             museumDao = getHelper(context).getMuseumDao();
-
             // Query the database. We need all the records so, used queryForAll()
             museumList = museumDao.queryForAll();
-
             Log.i("DB", "Select museums complete");
-
             //int numberOfMuseums = museumList.size();
             Log.i("DB", "Число музеев в базе данных: " + String.valueOf(museumList.size()));
 //            Log.i("DB", "Id последнего: " + String.valueOf(museumList.get(numberOfMuseums - 1).getMuseumId()));
 //            Log.i("DB", "название последнего: " + museumList.get(numberOfMuseums - 1).getTitle());
-
             return museumList;
-
         } catch (SQLException e) {
             e.printStackTrace();
             Log.i("DB", "Select museums FAIL");
@@ -125,8 +122,36 @@ class DataController {
         return null;
     }
 
-    String[] getMuseumTitles(Context context) {
+    List<Museum> searchMuseums(Context context, String searchString) {
+        List<Museum> museumList;
+        try {
+            // This is how, a reference of DAO object can be done
+            museumDao = getHelper(context).getMuseumDao();
+            // Query the database. We need all the records so, used queryForAll()
+            //Museum searchedMuseum = new Museum();
+            //searchedMuseum.setTitle(searchString);
 
+            QueryBuilder<Museum, Integer> queryBuilder =
+                    museumDao.queryBuilder();
+            museumList = museumDao.query(queryBuilder.where().like("title", "%" + searchString + "%").prepare());
+
+            //museumList = museumDao.queryForMatching(searchedMuseum);
+            //museumList = museumDao.queryForAll();
+            Log.i("DB", "Select museums complete");
+            //int numberOfMuseums = museumList.size();
+            Log.i("DB", "Число музеев в базе данных: " + String.valueOf(museumList.size()));
+//            Log.i("DB", "Id последнего: " + String.valueOf(museumList.get(numberOfMuseums - 1).getMuseumId()));
+//            Log.i("DB", "название последнего: " + museumList.get(numberOfMuseums - 1).getTitle());
+            return museumList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.i("DB", "Select museums FAIL");
+        }
+        return null;
+    }
+
+
+    String[] getMuseumTitles(Context context) {
 
         List<Museum> museumList;
 
@@ -154,7 +179,6 @@ class DataController {
             Log.i("DB", "Select titles FAIL");
             return null;
         }
-
     }
 
     void releaseHelper() {
@@ -172,5 +196,11 @@ class DataController {
         return databaseHelper;
     }
 
+    public void setSelectedMuseum(Museum selectedMuseum) {
+        this.selectedMuseum = selectedMuseum;
+    }
 
+    public Museum getSelectedMuseum() {
+        return selectedMuseum;
+    }
 }
