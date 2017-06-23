@@ -15,10 +15,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import ru.cpsmi.artnightmobileapp.data.Museum;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
@@ -97,9 +103,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add markers
         DataController dataController = DataController.getInstance();
         List<Museum> listOfMuseums = dataController.getListOfMuseums(this);
+
+        BitmapDescriptor eveningMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+        BitmapDescriptor nightMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+        BitmapDescriptor markerColor = nightMarker;
+        DateFormat formatter = new SimpleDateFormat("HH:mm");
         for (Museum currentMuseum : listOfMuseums) {
             LatLng museum = new LatLng(currentMuseum.getLatitude(), currentMuseum.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(museum).title(currentMuseum.getTitle()));
+            try {
+                if (currentMuseum.getEndTime().after((Date) formatter.parse("12:00"))) {
+                    markerColor = eveningMarker;
+                    Log.d("Art", "открытие: "+currentMuseum.getStartTime().toString());
+                    Log.d("Art", "закрытие: "+currentMuseum.getEndTime().toString());
+                }
+            } catch (ParseException e) {
+                Log.d("Art", "ParseException");
+                e.printStackTrace();
+            }
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(museum)
+                    .icon(markerColor)
+                    .title(currentMuseum.getTitle()));
+
+
         }
 
 
