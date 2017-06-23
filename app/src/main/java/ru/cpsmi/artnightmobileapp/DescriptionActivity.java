@@ -3,12 +3,14 @@ package ru.cpsmi.artnightmobileapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class DescriptionActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView museumTitle, museumDescription;
+    private TextView museumTitle ;
+    private WebView museumDescription;
     private ImageButton backButton;
 
     @Override
@@ -20,13 +22,13 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
         backButton.setOnClickListener(this);
 
         museumTitle = (TextView) findViewById(R.id.museumTitle);
-        museumDescription = (TextView) findViewById(R.id.museumDescription);
+        museumDescription = (WebView) findViewById(R.id.museumDescription);
 
         DataController dataController = DataController.getInstance();
         dataController.setTestDataToLocalDB(this);
 
         museumTitle.setText(dataController.getSelectedMuseum().getTitle());
-        museumDescription.setText(dataController.getSelectedMuseum().getProgramme());
+        museumDescription.loadData(dataController.getSelectedMuseum().getProgramme(), "text/html; charset=UTF-8", null);
 
     }
 
