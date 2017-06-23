@@ -41,10 +41,13 @@ public class Museum {
     public Museum() { //
     }
 
-    public Museum(String title, double latitude, double longitude) {
+    public Museum(String title, Date openTime, Date closeTime,  double latitude, double longitude, String programme) {
         this.title = title;
+        this.startTime=openTime;
+        this.endTime=closeTime;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.programme=programme;
         //this.startTime = new Date(startTime);
     }
 

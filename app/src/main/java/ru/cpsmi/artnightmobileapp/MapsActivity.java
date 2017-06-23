@@ -66,7 +66,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //
 
 
-
     }
 
 
@@ -128,12 +127,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void showSelectedMuseum() {
+        LatLng selectedMuseum = new LatLng(59.9495479, 30.3162639);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(selectedMuseum));
+    }
+
     @Override
     public void onClick(View v) {
 
-        // Render StudentAddActivity screen once click on "Add Student" Button
-        Log.i("Art", ""+v+" pressed");
-        if(v == searchButton) {
+        Log.i("Art", "" + v + " pressed");
+        if (v == searchButton) {
             startActivity(new Intent(this, SearchActivity.class));
         }
     }

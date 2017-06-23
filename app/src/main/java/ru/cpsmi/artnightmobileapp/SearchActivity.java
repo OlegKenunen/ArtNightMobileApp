@@ -102,19 +102,22 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.i("Art", "Short click, position="+position);
-        if (position > 0) {
-            selectedRecordPosition = position - 1;
+        Log.i("Art", "Short click, position=" + position);
+        if (position >= 0) {
+            selectedRecordPosition = position;
+            Log.i("Art", "Clicked position=" + museumList.get(selectedRecordPosition).getTitle());
             //показать метку на карте
+
 
         }
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.i("Art", "Long click, position="+position);
-        if (position > 0) {
-            selectedRecordPosition = position - 1;
+        Log.i("Art", "Long click, position=" + position);
+        if (position >= 0) {
+            selectedRecordPosition = position;
+            Log.i("Art", "Clicked position=" + museumList.get(selectedRecordPosition).getTitle());
             //Показать описание музея
             DataController dataController = DataController.getInstance();
             dataController.setTestDataToLocalDB(this);

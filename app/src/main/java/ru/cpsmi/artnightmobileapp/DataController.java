@@ -1,6 +1,7 @@
 package ru.cpsmi.artnightmobileapp;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -9,9 +10,15 @@ import ru.cpsmi.artnightmobileapp.data.DatabaseHelper;
 import ru.cpsmi.artnightmobileapp.data.Event;
 import ru.cpsmi.artnightmobileapp.data.Museum;
 
+import java.io.*;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -49,35 +56,73 @@ class DataController {
             // Query the database. We need all the records so, used queryForAll()
             long coundOfMuseums = museumDao.countOf();
             if (museumDao.countOf() > 0) {
-                Log.i("DB", "It is NOT necessary to insert data");
+                Log.i("Art", "It is NOT necessary to insert data");
                 return;
             } else {
-                Log.i("DB", "It is necessary to insert data");
+                Log.i("Art", "It is necessary to insert data");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            Log.i("DB", "Check DB FAIL");
+            Log.i("Art", "Check DB FAIL");
         }
 
 
         final List<Museum> listOfMuseums = new ArrayList<Museum>();
         final List<Event> listOfEvents = new ArrayList<Event>();
 
-        //Первичное наполнение базы данных
-        //Переделать на считывание из файла
-        listOfMuseums.add(new Museum("Ботанический сад Петра Великого", 59.970984, 30.32144));
+        final String DIR_SD = "";
+        final String FILENAME_SD = "museum_db.txt";
 
-        listOfMuseums.add(new Museum("Планетарий", 59.955366, 30.311068));
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.d("Art", "SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
+        // получаем путь к SD
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+        // формируем объект File, который содержит путь к файлу
+        File sdFile = new File(sdPath, FILENAME_SD);
+        Log.d("Art", "Полный путь: " + sdFile);
+        try {
+            // открываем поток для чтения
+            BufferedReader br = new BufferedReader(new FileReader(sdFile));
+            String str = "";
 
-        listOfMuseums.add(new Museum("Лофт Проект ЭТАЖИ", 59.921772, 30.35646));
+            // читаем содержимое
+            while ((str = br.readLine()) != null) {
+                Log.d("Art", str);
+                StringTokenizer tokens = new StringTokenizer(str, "\t");
 
-        listOfMuseums.add(new Museum("Музей интерактивной науки «ЛабиринтУм»", 59.965376, 30.315603));
+                //Первичное наполнение базы данных
+                try {
+                    DateFormat formatter = new SimpleDateFormat("HH:mm");
+                    listOfMuseums.add(new Museum(
+                            ""+tokens.nextToken(),
+                            (Date) formatter.parse( tokens.nextToken()),
+                            (Date) formatter.parse( tokens.nextToken()),
+                            Double.parseDouble(tokens.nextToken()),
+                            Double.parseDouble(tokens.nextToken()),
+                            "" + tokens.nextToken()));
+                    //listOfEvents.add(new Event("12 концертов: скрипка и клавесин, джаз и неофолк", "Концерт", listOfMuseums.get(listOfMuseums.size() - 1)));
+                } catch (ParseException e) {
+                    Log.d("Art", "ParseException");
+                    e.printStackTrace();
+                }
 
-        listOfMuseums.add(new Museum("Ленфильм", 59.958073, 30.317481));
 
-        listOfMuseums.add(new Museum("Академическая Капелла Санкт-Петербурга", 59.939942, 30.320758));
-        listOfEvents.add(new Event("12 концертов: скрипка и клавесин, джаз и неофолк", "Концерт", listOfMuseums.get(listOfMuseums.size() - 1)));
+
+            }
+        } catch (FileNotFoundException e) {
+            Log.d("Art", "FileNotFoundException");
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.d("Art", "IOException");
+            e.printStackTrace();
+        }
 
 
         try {
@@ -203,4 +248,5 @@ class DataController {
     public Museum getSelectedMuseum() {
         return selectedMuseum;
     }
+
 }

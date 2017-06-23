@@ -16,7 +16,7 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description);
 
-        backButton = (ImageButton) findViewById(R.id.imageButtonBack);
+        backButton = (ImageButton) findViewById(R.id.backButton);
         backButton.setOnClickListener(this);
 
         museumTitle = (TextView) findViewById(R.id.museumTitle);
