@@ -37,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button searchButton;
     private ImageView searchIcon;
     private ImageView settingsIcon;
+    private int selectedMuseumId;
 
     // It holds the list of Museum objects fetched from Database
     private List<Museum> museumList;
@@ -172,7 +173,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.i("Art", "" + v + " pressed");
         if (v == searchButton) {
-            startActivity(new Intent(this, SearchActivity.class));
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -185,6 +187,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Retrieve the data from the marker.
         Integer clickedMuseumId = (Integer) marker.getTag();
         Log.i("Art", "Нажат маркер №" + clickedMuseumId);
+        selectedMuseumId=clickedMuseumId;
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
@@ -196,6 +199,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onInfoWindowClick(Marker marker) {
         Log.i("Art", "Нажато информационное окно маркера");
+        Intent intent = new Intent(this, DescriptionActivity.class);
+        intent.putExtra("museumId", selectedMuseumId);
+        startActivity(intent);
 
     }
 }
