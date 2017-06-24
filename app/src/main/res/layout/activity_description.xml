@@ -4,8 +4,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
@@ -14,39 +14,60 @@
         android:orientation="vertical"
         android:weightSum="1">
 
-    <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/back_icon"
-            android:id="@+id/backButton"
-            android:background="@android:color/white"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
     <TextView
-            android:text="TextView"
+            android:text="MuseumTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/museumTitle"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:textSize="18sp"
-            android:layout_marginRight="10dp"
             android:textStyle="normal|bold"
             android:layout_toRightOf="@+id/backButton"
-            android:layout_toEndOf="@+id/backButton"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+    <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/back_icon"
+            android:id="@+id/backButton"
+            android:layout_alignTop="@+id/museumTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@android:color/white"/>
 
     <WebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:id="@+id/museumDescription"
-            android:layout_below="@+id/backButton"/>
+            android:layout_below="@+id/address"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+    </WebView>
+
+    <TextView
+            android:text="Time-Time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/openTime"
+            android:textSize="14sp"
+            android:layout_below="@+id/museumTitle"
+            android:layout_toRightOf="@+id/backButton"
+            android:layout_toEndOf="@+id/backButton"/>
+
+    <TextView
+            android:text="Address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_x="0dp"
+            android:layout_y="-2dp"
+            android:id="@+id/address"
+            android:textSize="12sp"
+            android:layout_below="@+id/openTime"
+            android:layout_alignLeft="@+id/openTime"
+            android:layout_alignStart="@+id/openTime"/>
 
 </RelativeLayout>

@@ -111,10 +111,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (Museum currentMuseum : listOfMuseums) {
             LatLng museum = new LatLng(currentMuseum.getLatitude(), currentMuseum.getLongitude());
             try {
+
                 if (currentMuseum.getEndTime().after((Date) formatter.parse("12:00"))) {
                     markerColor = eveningMarker;
-                    Log.d("Art", "открытие: "+currentMuseum.getStartTime().toString());
-                    Log.d("Art", "закрытие: "+currentMuseum.getEndTime().toString());
+                    Log.d("Art", formatter.format(currentMuseum.getStartTime()) +
+                            "-" + formatter.format(currentMuseum.getEndTime()) +
+                            "-> Вечер: " + currentMuseum.getTitle());
+                } else {
+                    markerColor = nightMarker;
+                    Log.d("Art", formatter.format(currentMuseum.getStartTime()) +
+                            "-" + formatter.format(currentMuseum.getEndTime()) +
+                            "-> Ночь: " + currentMuseum.getTitle());
                 }
             } catch (ParseException e) {
                 Log.d("Art", "ParseException");
@@ -165,6 +172,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i("Art", "" + v + " pressed");
         if (v == searchButton) {
             startActivity(new Intent(this, SearchActivity.class));
+        } else {
+            Log.i("Art", "Открыть описение " + v);
         }
     }
 

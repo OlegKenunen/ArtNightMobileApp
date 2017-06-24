@@ -99,11 +99,11 @@ class DataController {
 
                 //Первичное наполнение базы данных
                 try {
-                    DateFormat formatter = new SimpleDateFormat("HH:mm");
+                    DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
                     listOfMuseums.add(new Museum(
                             ""+tokens.nextToken(),
-                            (Date) formatter.parse( tokens.nextToken()),
-                            (Date) formatter.parse( tokens.nextToken()),
+                            (Date) timeFormatter.parse( tokens.nextToken()),
+                            (Date) timeFormatter.parse( tokens.nextToken()),
                             Double.parseDouble(tokens.nextToken()),
                             Double.parseDouble(tokens.nextToken()),
                             "" + tokens.nextToken()));

@@ -30,7 +30,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_search);
 
         DataController dataController = DataController.getInstance();
-        dataController.setTestDataToLocalDB(this);
+        //dataController.setTestDataToLocalDB(this);
         String[] museumTitles = dataController.getMuseumTitles(this);
 
         // Получаем ссылку на элемент AutoCompleteTextView в разметке
@@ -50,16 +50,15 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         clearButton.setOnClickListener(this);
 
 
+
     }
 
     private void onSearch() {
 
         DataController dataController = DataController.getInstance();
-        dataController.setTestDataToLocalDB(this);
         String searchString = autoCompleteTextView.getText().toString();
 
         museumList = dataController.searchMuseums(this, searchString);
-
 
         int numberOfMuseums = museumList.size();
         if (numberOfMuseums == 0) {
@@ -120,7 +119,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             Log.i("Art", "Clicked position=" + museumList.get(selectedRecordPosition).getTitle());
             //Показать описание музея
             DataController dataController = DataController.getInstance();
-            dataController.setTestDataToLocalDB(this);
             dataController.setSelectedMuseum(museumList.get(selectedRecordPosition));
             startActivity(new Intent(this, DescriptionActivity.class));
 

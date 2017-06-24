@@ -7,9 +7,12 @@ import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class DescriptionActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView museumTitle ;
+    private TextView museumTitle, openTime, address;
     private WebView museumDescription;
     private ImageButton backButton;
 
@@ -22,12 +25,20 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
         backButton.setOnClickListener(this);
 
         museumTitle = (TextView) findViewById(R.id.museumTitle);
+        openTime = (TextView) findViewById(R.id.openTime);
+        address = (TextView) findViewById(R.id.address);
+
         museumDescription = (WebView) findViewById(R.id.museumDescription);
 
         DataController dataController = DataController.getInstance();
-        dataController.setTestDataToLocalDB(this);
+        //dataController.setTestDataToLocalDB(this);
 
         museumTitle.setText(dataController.getSelectedMuseum().getTitle());
+        DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+        openTime.setText(timeFormatter.format(dataController.getSelectedMuseum().getStartTime()) + "-"
+                + timeFormatter.format(dataController.getSelectedMuseum().getEndTime()));
+        address.setText(dataController.getSelectedMuseum().getAddress());
+
         museumDescription.loadData(dataController.getSelectedMuseum().getProgramme(), "text/html; charset=UTF-8", null);
 
     }
