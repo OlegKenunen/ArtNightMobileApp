@@ -15,10 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.*;
 import ru.cpsmi.artnightmobileapp.data.Museum;
 
 import java.text.DateFormat;
@@ -27,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -128,10 +125,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 e.printStackTrace();
             }
 
-            mMap.addMarker(new MarkerOptions()
+            Marker currentMurker = mMap.addMarker(new MarkerOptions()
                     .position(museum)
                     .icon(markerColor)
                     .title(currentMuseum.getTitle()));
+            currentMurker.setTag(currentMuseum.getMuseumId());
 
 
         }
@@ -158,6 +156,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap.setMyLocationEnabled(true);
 
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+
 
     }
 
@@ -172,10 +173,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i("Art", "" + v + " pressed");
         if (v == searchButton) {
             startActivity(new Intent(this, SearchActivity.class));
-        } else {
-            Log.i("Art", "Открыть описение " + v);
         }
     }
 
+    /**
+     * Called when the user clicks a marker.
+     */
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
 
+        // Retrieve the data from the marker.
+        Integer clickedMuseumId = (Integer) marker.getTag();
+        Log.i("Art", "Нажат маркер №" + clickedMuseumId);
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Log.i("Art", "Нажато информационное окно маркера");
+
+    }
 }
