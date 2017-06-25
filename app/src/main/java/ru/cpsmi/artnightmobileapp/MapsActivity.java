@@ -21,6 +21,7 @@ import ru.cpsmi.artnightmobileapp.data.Museum;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // It holds the list of Museum objects fetched from Database
     private List<Museum> museumList;
+    private List<Marker> markerList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,11 +128,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 e.printStackTrace();
             }
 
-            Marker currentMurker = mMap.addMarker(new MarkerOptions()
+            Marker currentMarker = mMap.addMarker(new MarkerOptions()
                     .position(museum)
                     .icon(markerColor)
                     .title(currentMuseum.getTitle()));
-            currentMurker.setTag(currentMuseum.getMuseumId());
+            currentMarker.setTag(currentMuseum.getMuseumId());
+            //Добавить маркер в список
+            markerList.add(currentMarker);
 
 
         }
@@ -163,10 +167,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void showSelectedMuseum() {
-        LatLng selectedMuseum = new LatLng(59.9495479, 30.3162639);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(selectedMuseum));
-    }
 
     @Override
     public void onClick(View v) {
@@ -174,7 +174,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i("Art", "" + v + " pressed");
         if (v == searchButton) {
             Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
+            //запустить SearchActivity и ждать ответа
+            startActivityForResult(intent, 1);
         }
     }
 
@@ -187,7 +188,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Retrieve the data from the marker.
         Integer clickedMuseumId = (Integer) marker.getTag();
         Log.i("Art", "Нажат маркер №" + clickedMuseumId);
-        selectedMuseumId=clickedMuseumId;
+        selectedMuseumId = clickedMuseumId;
         //Ждать нажатия на информационное окно
 
         // Return false to indicate that we have not consumed the event and that we wish
@@ -205,4 +206,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        selectedMuseumId = data.getIntExtra("museumId", -1);
+        Log.i("Art", "Получено ID музея: " + selectedMuseumId);
+        if (selectedMuseumId == -1) {
+            return;
+        }
+        //Найти музей с указанным Id
+        DataController dataController = DataController.getInstance();
+        Museum selectedMuseum = dataController.getMuseumById(this, selectedMuseumId);
+        //Найти его же в списке маркеров
+        for (Marker aMarker : markerList) {
+            if ((int) aMarker.getTag() == selectedMuseumId) {
+                aMarker.showInfoWindow();
+                LatLng selectedMuseumPosition = new LatLng(selectedMuseum.getLatitude(), selectedMuseum.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(selectedMuseumPosition));
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(15f));
+
+                break;
+            }
+
+        }
+
+
+    }
 }
+

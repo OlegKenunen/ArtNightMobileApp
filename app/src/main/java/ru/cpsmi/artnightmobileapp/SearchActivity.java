@@ -105,7 +105,15 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         if (position >= 0) {
             selectedRecordPosition = position;
             Log.i("Art", "Clicked position=" + museumList.get(selectedRecordPosition).getTitle());
+
+            selectedMuseumId = museumList.get(selectedRecordPosition).getMuseumId();
+            Log.i("Art", "Id музея: "+ selectedMuseumId);
             //показать метку на карте
+            Intent intent = new Intent();
+            intent.putExtra("museumId", selectedMuseumId);
+            Log.i("Art", "Отправлено Id музея "+ selectedMuseumId+ " в Intent");
+            setResult(RESULT_OK, intent);
+            finish();
 
 
         }
