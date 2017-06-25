@@ -1,11 +1,14 @@
 package ru.cpsmi.artnightmobileapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import ru.cpsmi.artnightmobileapp.data.Museum;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,6 +18,7 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
     private TextView museumTitle, openTime, address;
     private WebView museumDescription;
     private ImageButton backButton;
+    int selectedMuseumId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +35,22 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
         museumDescription = (WebView) findViewById(R.id.museumDescription);
 
         DataController dataController = DataController.getInstance();
-        //dataController.setTestDataToLocalDB(this);
 
-        museumTitle.setText(dataController.getSelectedMuseum().getTitle());
+        Intent intent = getIntent();
+
+        selectedMuseumId = intent.getIntExtra("museumId", 0);
+        Log.i("Art", "MuseumId получено: " + selectedMuseumId);
+
+        Museum selectedMuseum = dataController.getMuseumById(this, selectedMuseumId);
+
+
+        museumTitle.setText(selectedMuseum.getTitle());
         DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-        openTime.setText(timeFormatter.format(dataController.getSelectedMuseum().getStartTime()) + "-"
-                + timeFormatter.format(dataController.getSelectedMuseum().getEndTime()));
-        address.setText(dataController.getSelectedMuseum().getAddress());
+        openTime.setText(timeFormatter.format(selectedMuseum.getStartTime()) + "-"
+                + timeFormatter.format(selectedMuseum.getEndTime()));
+        address.setText(selectedMuseum.getAddress());
 
-        museumDescription.loadData(dataController.getSelectedMuseum().getProgramme(), "text/html; charset=UTF-8", null);
+        museumDescription.loadData(selectedMuseum.getProgramme(), "text/html; charset=UTF-8", null);
 
     }
 

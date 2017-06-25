@@ -23,6 +23,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private ImageButton clearButton;
 
     private int selectedRecordPosition = -1;
+    private int selectedMuseumId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         clearButton = (ImageButton) findViewById(R.id.imageButtonClear);
         clearButton.setOnClickListener(this);
-
 
 
     }
@@ -118,9 +118,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             selectedRecordPosition = position;
             Log.i("Art", "Clicked position=" + museumList.get(selectedRecordPosition).getTitle());
             //Показать описание музея
-            DataController dataController = DataController.getInstance();
-            dataController.setSelectedMuseum(museumList.get(selectedRecordPosition));
-            startActivity(new Intent(this, DescriptionActivity.class));
+            selectedMuseumId = museumList.get(selectedRecordPosition).getMuseumId();
+
+            Intent intent = new Intent(this, DescriptionActivity.class);
+            intent.putExtra("museumId", selectedMuseumId);
+            startActivity(intent);
 
         }
         return false;

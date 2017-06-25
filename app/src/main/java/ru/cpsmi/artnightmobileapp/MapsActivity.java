@@ -188,6 +188,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Integer clickedMuseumId = (Integer) marker.getTag();
         Log.i("Art", "Нажат маркер №" + clickedMuseumId);
         selectedMuseumId=clickedMuseumId;
+        //Ждать нажатия на информационное окно
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the

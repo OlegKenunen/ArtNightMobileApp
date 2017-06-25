@@ -35,8 +35,6 @@ class DataController {
     private Dao<Museum, Integer> museumDao;
     private Dao<Event, Integer> eventDao;
 
-    private Museum selectedMuseum;
-
     private DataController() {
     }
 
@@ -167,6 +165,25 @@ class DataController {
         return null;
     }
 
+    Museum getMuseumById(Context context, int selectedId) {
+        Museum selectedMuseum;
+
+        try {
+            // This is how, a reference of DAO object can be done
+            museumDao = getHelper(context).getMuseumDao();
+            // Query the database. We need all the records so, used queryForAll()
+            selectedMuseum=museumDao.queryForId(selectedId);
+            Log.i("DB", "Select museum by id complete");
+            //int numberOfMuseums = museumList.size();
+
+            return selectedMuseum;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.i("DB", "Select museums FAIL");
+        }
+        return null;
+    }
+
     List<Museum> searchMuseums(Context context, String searchString) {
         List<Museum> museumList;
         try {
@@ -241,12 +258,5 @@ class DataController {
         return databaseHelper;
     }
 
-    public void setSelectedMuseum(Museum selectedMuseum) {
-        this.selectedMuseum = selectedMuseum;
-    }
-
-    public Museum getSelectedMuseum() {
-        return selectedMuseum;
-    }
 
 }
