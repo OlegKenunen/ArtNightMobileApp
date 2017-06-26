@@ -226,7 +226,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 aMarker.showInfoWindow();
                 LatLng selectedMuseumPosition = new LatLng(selectedMuseum.getLatitude(), selectedMuseum.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(selectedMuseumPosition));
-                mMap.moveCamera(CameraUpdateFactory.zoomTo(15f));
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(13f));
 
                 break;
             }

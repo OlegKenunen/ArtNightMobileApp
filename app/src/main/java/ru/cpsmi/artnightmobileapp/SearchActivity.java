@@ -35,13 +35,13 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         DataController dataController = DataController.getInstance();
         //dataController.setTestDataToLocalDB(this);
-        String[] museumTitles = dataController.getMuseumTitles(this);
+        String[] museumTitlesForAutocomplete = dataController.getMuseumTitles(this);
 
         // Получаем ссылку на элемент AutoCompleteTextView в разметке
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoComplete);
         // Создаем адаптер для автозаполнения элемента AutoCompleteTextView
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, museumTitles);
+                new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, museumTitlesForAutocomplete);
         autoCompleteTextView.setAdapter(adapter);
 
         searchButton = (ImageButton) findViewById(R.id.imageButtonSearch);
@@ -53,6 +53,32 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         clearButton = (ImageButton) findViewById(R.id.imageButtonClear);
         clearButton.setOnClickListener(this);
 
+
+        //Получить и отобразить полный список музеев
+        //DataController dataController = DataController.getInstance();
+        museumList = dataController.getListOfMuseums(this);
+        if (museumList == null || museumList.isEmpty()) {
+            return;
+        }
+        int numberOfMuseums;
+        numberOfMuseums = museumList.size();
+        final String[] museumTitles = new String[numberOfMuseums];
+        for (int i = 0; i < numberOfMuseums; i++) {
+            museumTitles[i] = museumList.get(i).getTitle();
+        }
+
+        listView = (ListView) findViewById(R.id.listViewMuseums);
+
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        //       android.R.layout.simple_list_item_1, museumTitles);
+        adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, museumTitles);
+        listView.setAdapter(adapter);
+
+        selectedRecordPosition = -1;
+        // Attach OnItemLongClickListener and OnItemClickListener to track user action and perform accordingly
+        listView.setOnItemLongClickListener(this);
+        listView.setOnItemClickListener(this);
 
     }
 
