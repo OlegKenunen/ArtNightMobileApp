@@ -15,10 +15,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 /**
@@ -99,9 +96,9 @@ class DataController {
                 try {
                     DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
                     listOfMuseums.add(new Museum(
-                            ""+tokens.nextToken(),
-                            (Date) timeFormatter.parse( tokens.nextToken()),
-                            (Date) timeFormatter.parse( tokens.nextToken()),
+                            "" + tokens.nextToken(),
+                            (Date) timeFormatter.parse(tokens.nextToken()),
+                            (Date) timeFormatter.parse(tokens.nextToken()),
                             Double.parseDouble(tokens.nextToken()),
                             Double.parseDouble(tokens.nextToken()),
                             "" + tokens.nextToken()));
@@ -110,7 +107,6 @@ class DataController {
                     Log.d("Art", "ParseException");
                     e.printStackTrace();
                 }
-
 
 
             }
@@ -172,7 +168,7 @@ class DataController {
             // This is how, a reference of DAO object can be done
             museumDao = getHelper(context).getMuseumDao();
             // Query the database. We need all the records so, used queryForAll()
-            selectedMuseum=museumDao.queryForId(selectedId);
+            selectedMuseum = museumDao.queryForId(selectedId);
             Log.i("DB", "Select museum by id complete");
             //int numberOfMuseums = museumList.size();
 
@@ -184,26 +180,35 @@ class DataController {
         return null;
     }
 
-    List<Museum> searchMuseums(Context context, String searchString) {
+    List<Museum> searchMuseums(Context context, String searchString, String options) {
+        if (options.compareTo("WHOLE_TITLE") != 0
+                && options.compareTo("TITLE") != 0
+                && options.compareTo("PROGRAMME") != 0) {
+            Log.i("Art", "На вход получено некорректное значение options: " + options);
+            return null;
+        }
         List<Museum> museumList;
         try {
             // This is how, a reference of DAO object can be done
             museumDao = getHelper(context).getMuseumDao();
-            // Query the database. We need all the records so, used queryForAll()
-            //Museum searchedMuseum = new Museum();
-            //searchedMuseum.setTitle(searchString);
+            QueryBuilder<Museum, Integer> queryBuilder = museumDao.queryBuilder();
 
-            QueryBuilder<Museum, Integer> queryBuilder =
-                    museumDao.queryBuilder();
-            museumList = museumDao.query(queryBuilder.where().like("title", "%" + searchString + "%").prepare());
-
+            if (options.compareTo("WHOLE_TITLE") == 0) {
+                Log.i("Art", "Поиск по части названия");
+                museumList = museumDao.query(queryBuilder.where().like("title", searchString).prepare());
+            } else if (options.compareTo("TITLE") == 0) {
+                Log.i("Art", "Поиск по части названия");
+                museumList = museumDao.query(queryBuilder.where().like("title", "%" + searchString + "%").prepare());
+            } else if (options.compareTo("PROGRAMME") == 0) {
+                Log.i("Art", "Поиск по программе");
+                museumList = museumDao.query(queryBuilder.where().like("programme", "%" + searchString + "%").prepare());
+            } else {
+                return null;
+            }
             //museumList = museumDao.queryForMatching(searchedMuseum);
             //museumList = museumDao.queryForAll();
             Log.i("DB", "Select museums complete");
-            //int numberOfMuseums = museumList.size();
-            Log.i("DB", "Число музеев в базе данных: " + String.valueOf(museumList.size()));
-//            Log.i("DB", "Id последнего: " + String.valueOf(museumList.get(numberOfMuseums - 1).getMuseumId()));
-//            Log.i("DB", "название последнего: " + museumList.get(numberOfMuseums - 1).getTitle());
+
             return museumList;
         } catch (SQLException e) {
             e.printStackTrace();

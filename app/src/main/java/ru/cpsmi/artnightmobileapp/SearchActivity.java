@@ -1,13 +1,16 @@
 package ru.cpsmi.artnightmobileapp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import ru.cpsmi.artnightmobileapp.data.Museum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
@@ -15,7 +18,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private AutoCompleteTextView autoCompleteTextView;
 
 
-    private List<Museum> museumList;
+    private List<Museum> museumList = new ArrayList<>();
     private ListView listView;
 
     private ImageButton backButton;
@@ -58,12 +61,21 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         DataController dataController = DataController.getInstance();
         String searchString = autoCompleteTextView.getText().toString();
 
-        museumList = dataController.searchMuseums(this, searchString);
 
-        int numberOfMuseums = museumList.size();
-        if (numberOfMuseums == 0) {
-            return;
+        museumList = dataController.searchMuseums(this, searchString, "WHOLE_TITLE");
+        if (museumList == null || museumList.isEmpty()) {
+            museumList = dataController.searchMuseums(this, searchString, "TITLE");
+            if (museumList == null || museumList.isEmpty()) {
+                museumList = dataController.searchMuseums(this, searchString, "PROGRAMME");
+                if (museumList == null || museumList.isEmpty()) {
+                    return;
+                }
+            }
         }
+
+
+        int numberOfMuseums;
+        numberOfMuseums = museumList.size();
         final String[] museumTitles = new String[numberOfMuseums];
         for (int i = 0; i < numberOfMuseums; i++) {
             museumTitles[i] = museumList.get(i).getTitle();
@@ -83,6 +95,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View v) {
         if (v == backButton) {
@@ -107,11 +120,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             Log.i("Art", "Clicked position=" + museumList.get(selectedRecordPosition).getTitle());
 
             selectedMuseumId = museumList.get(selectedRecordPosition).getMuseumId();
-            Log.i("Art", "Id музея: "+ selectedMuseumId);
+            Log.i("Art", "Id музея: " + selectedMuseumId);
             //показать метку на карте
             Intent intent = new Intent();
             intent.putExtra("museumId", selectedMuseumId);
-            Log.i("Art", "Отправлено Id музея "+ selectedMuseumId+ " в Intent");
+            Log.i("Art", "Отправлено Id музея " + selectedMuseumId + " в Intent");
             setResult(RESULT_OK, intent);
             finish();
 
