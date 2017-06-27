@@ -4,6 +4,7 @@ package ru.cpsmi.artnightmobileapp.data;
  * Created by Oleg on 18.06.2017.
  * oleg.kenunen@gmail.com
  */
+
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 
 import java.io.IOException;
